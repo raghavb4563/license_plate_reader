@@ -45,7 +45,7 @@ def readNumberPlate(img):
         # Process license plate for easy ocr to read
         license_plate_crop_gray = cv2.cvtColor(license_plate_crop, cv2.COLOR_BGR2GRAY)
         _, license_plate_crop_thresh = cv2.threshold(license_plate_crop_gray, 64, 255, cv2.THRESH_BINARY_INV)
-        resized = cv2.resize(license_plate_crop_thresh, (900, 200))
+        resized = cv2.resize(license_plate_crop_thresh, (900, 200),interpolation=cv2.INTER_LINEAR)
         # Calling the utility functions
         license_plate_text_res, score_res = read_license_plate(resized)
         license_plate_text, score = read_license_plate(license_plate_crop_thresh)
