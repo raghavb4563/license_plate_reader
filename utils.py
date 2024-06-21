@@ -45,7 +45,10 @@ def readNumberPlate(img):
         # Process license plate for easy ocr to read
         license_plate_crop_gray = cv2.cvtColor(license_plate_crop, cv2.COLOR_BGR2GRAY)
         _, license_plate_crop_thresh = cv2.threshold(license_plate_crop_gray, 64, 255, cv2.THRESH_BINARY_INV)
-        resized = cv2.resize(license_plate_crop_thresh, (900, 200),interpolation=cv2.INTER_LINEAR)
+        
+        # Resize the image using OpenCV
+        resized = cv2.resize(license_plate_crop_thresh, (900, 200), interpolation=cv2.INTER_LINEAR)
+        
         # Calling the utility functions
         license_plate_text_res, score_res = read_license_plate(resized)
         license_plate_text, score = read_license_plate(license_plate_crop_thresh)
@@ -117,7 +120,7 @@ def read_license_plate(license_plate_crop):
     Read the license plate text from the given cropped image.
 
     Args:
-        license_plate_crop (PIL.Image.Image): Cropped image containing the license plate.
+        license_plate_crop (numpy.ndarray): Cropped image containing the license plate.
 
     Returns:
         tuple: Tuple containing the formatted license plate text and its confidence score.
@@ -128,13 +131,10 @@ def read_license_plate(license_plate_crop):
     for detection in detections:
         bbox, text, score = detection
 
-
         text1 = text.upper().replace(' ', '')
-
-
 
         if license_complies_format(text1):
             return format_license(text1), score
         else:
-           return None, 0
+            return "", 0
         

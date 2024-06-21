@@ -14,7 +14,7 @@ logo_path = "logo1.jpeg"
 
 with st.sidebar:
     st.image(logo_path, width=200)
-    st.title("Gate Guard")
+    st.title("GATE GUARD")
     st.write("Welcome to the Gate Guard")
     st.write(" Choose an option from the menu below to get started:")
 
