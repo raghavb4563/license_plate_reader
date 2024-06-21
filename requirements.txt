@@ -8,3 +8,4 @@ easyocr==1.7.0
 filterpy==1.4.5
 pillow==10.3.0
 streamlit-option-menu==0.3.6
+streamlit==1.22.0  
