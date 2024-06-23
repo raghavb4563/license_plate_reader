@@ -5,6 +5,6 @@ numpy==1.24.3
 scipy==1.10.1
 easyocr==1.7.1
 filterpy==1.4.5
-pillow
+pillow=11.1.0
 streamlit-option-menu==0.3.6
 streamlit==1.22.0   
