@@ -1,4 +1,5 @@
 import streamlit as st
+from ultralytics import YOLO
 from streamlit_option_menu import option_menu
 import warnings
 import numpy as np
@@ -11,6 +12,8 @@ import pandas as pd
 import base64 
 
 logo_path = "logo1.jpeg"
+
+coco_model = YOLO('yolov8n.pt')
 
 with st.sidebar:
     st.image(logo_path, width=200)
@@ -45,23 +48,32 @@ if (selected == 'About us'):
         col1, col2 = st.columns([5,8])
         col1.header('Input Image')
         col1.image(uploaded_file, caption='Uploaded Image', use_column_width=True)
-
+        vehicles = [2, 3, 5, 7]
         # Detect number plate and display result
         if st.button('Detect Number Plate'):
-            plate_text,score,img = readNumberPlate(image)
-            col2.header('License Plate Detected')
-            col2.image(img,caption='Detected Image', use_column_width=True)
-            if plate_text:
-                
-                owner = db.check_registered_vehicle(plate_text)
-                if owner:
-                    st.success(f"Access granted to {owner[0]} for {plate_text}")
-                    db.log_access(plate_text,owner[0])
-                else:
-                    st.write(plate_text)
-                    st.warning(" Number Plate Not Registered")
-            else:
-                st.warning("Number Plate not detected")
+            detections = coco_model(image)[0]
+            flag= 1
+            for detection in detections.boxes.data.tolist():
+                x1, y1, x2, y2, score, class_id = detection
+                if int(class_id) in vehicles:
+                    flag=0
+                    plate_text,score,img = readNumberPlate(image)
+                    col2.header('License Plate Detected')
+                    col2.image(img,caption='Detected Image', use_column_width=True)
+                    if plate_text:
+                        
+                        owner = db.check_registered_vehicle(plate_text)
+                        if owner:
+                            st.success(f"Access granted to {owner[0]} for {plate_text}")
+                            db.log_access(plate_text,owner[0])
+                        else:
+                            st.write(plate_text)
+                            st.warning(" Number Plate Not Registered")
+                    else:
+                        st.warning("Number Plate not detected")
+            
+            if(flag==1):
+                st.write("no vehicle detected")
     
     # Closing note
     st.write("Thank you for choosing Gate guard. We are committed to advancing security through technology and computer vision. "
